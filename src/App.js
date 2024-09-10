@@ -82,16 +82,42 @@ class App extends Component {
     isVisited: initialCountriesList[0].isVisited,
   }
 
-  onRemoveBtnClicked = name => {
-    const {isVisited} = this.state
-    this.setState({isVisited: false})
-    console.log(name, isVisited)
+  onRemoveBtnClicked = id => {
+    const {countriesList} = this.state
+    const country = countriesList.find(eachCountry => eachCountry.id === id)
+    if (country) {
+      this.setState(prevState => ({
+        countriesList: prevState.countriesList.map(eachCountry => {
+          if (country.id === eachCountry.id) {
+            const modifiedVisitValue = !eachCountry.isVisited
+            return {...eachCountry, isVisited: modifiedVisitValue}
+          }
+          return eachCountry
+        }),
+      }))
+    } else {
+      const updatedCountryList = [...countriesList, country]
+      this.setState({countriesList: updatedCountryList})
+    }
   }
 
-  onClickVisitBtn = name => {
-    const {isVisited} = this.state
-    this.setState({isVisited: true})
-    console.log(name, isVisited)
+  onClickVisitBtn = id => {
+    const {countriesList} = this.state
+    const country = countriesList.find(eachCountry => eachCountry.id === id)
+    if (country) {
+      this.setState(prevState => ({
+        countriesList: prevState.countriesList.map(eachCountry => {
+          if (country.id === eachCountry.id) {
+            const modifiedVisitValue = !eachCountry.isVisited
+            return {...eachCountry, isVisited: modifiedVisitValue}
+          }
+          return eachCountry
+        }),
+      }))
+    } else {
+      const updatedCountryList = [...countriesList, country]
+      this.setState({countriesList: updatedCountryList})
+    }
   }
 
   getFilteredCountriesList = () => {
@@ -105,6 +131,8 @@ class App extends Component {
   render() {
     const {countriesList, isVisited} = this.state
     const filteredCoutriesList = this.getFilteredCountriesList()
+    const showNoCountriesView = filteredCoutriesList.length === 0
+    console.log(showNoCountriesView)
 
     return (
       <div className="list-container">
@@ -113,20 +141,28 @@ class App extends Component {
           {countriesList.map(eachCountry => (
             <CountryList
               countryDetails={eachCountry}
+              key={eachCountry.id}
               onClickVisitBtn={this.onClickVisitBtn}
+              isVisited={isVisited}
             />
           ))}
         </ul>
         <div className="add-container">
           <h1 className="heading">Visited Countries</h1>
-          <ul>
-            {filteredCoutriesList.map(eachCountry => (
-              <VisitedCountries
-                visitedCountry={eachCountry}
-                onRemoveBtnClicked={this.onRemoveBtnClicked}
-              />
-            ))}
-          </ul>
+          {showNoCountriesView ? (
+            <p className="NC">No Countries Visited Yet</p>
+          ) : (
+            <ul>
+              {filteredCoutriesList.map(eachCountry => (
+                <VisitedCountries
+                  visitedCountry={eachCountry}
+                  key={eachCountry.id}
+                  onRemoveBtnClicked={this.onRemoveBtnClicked}
+                  showNoCountriesView={showNoCountriesView}
+                />
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     )

@@ -5,7 +5,7 @@ const VisitedCountries = props => {
   const {id, name, imageUrl} = visitedCountry
 
   const onRemoveBtn = () => {
-    onRemoveBtnClicked(name)
+    onRemoveBtnClicked(id)
   }
 
   return (
